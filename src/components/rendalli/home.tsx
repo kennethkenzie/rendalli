@@ -166,7 +166,7 @@ export function Home({ posts }: { posts: JournalMeta[] }) {
             transition={{ duration: 0.9, ease: EASE }}
             className="relative aspect-[4/5] rounded-3xl overflow-hidden"
           >
-            <Image src={IMAGES.grilled} alt="Grilled Nile Tilapia" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+            <Image src="https://res.cloudinary.com/dcnbho9c9/image/upload/v1776757888/Image_20260421_105008_aysdxv.jpg" alt="Farm-raised Nile Perch and Tilapia" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
           </motion.div>
           <div className="space-y-6">
             <p className="text-[11px] tracking-[0.3em] uppercase text-rendalli-green">From our farm</p>

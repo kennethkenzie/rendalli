@@ -123,7 +123,7 @@ export default function StoryPage() {
           transition={{ duration: 1.5, ease: EASE }}
           className="absolute inset-0"
         >
-          <Image src={IMAGES.family} alt="Family at the dinner table" fill sizes="100vw" className="object-cover" />
+          <Image src="https://res.cloudinary.com/dcnbho9c9/image/upload/v1776756373/Image_20260421_102501_wq2baq.jpg" alt="Family at the dinner table" fill sizes="100vw" className="object-cover" />
         </motion.div>
         <div className="absolute inset-0 bg-gradient-to-r from-night-leaf/80 to-transparent" />
         <div className="relative z-10 h-full flex items-center max-w-7xl mx-auto px-6 md:px-10">
