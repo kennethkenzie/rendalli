@@ -130,9 +130,6 @@ export function Home({ posts }: { posts: JournalMeta[] }) {
                 Natural. Organic. Tasty. <em className="not-italic text-rendalli-green">Together.</em>
               </h2>
             </div>
-            <Link href="/brand" className="text-sm text-deep-forest hover:text-rendalli-green underline-offset-4 hover:underline">
-              Read the full brand essence →
-            </Link>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
@@ -171,7 +168,7 @@ export function Home({ posts }: { posts: JournalMeta[] }) {
           <div className="space-y-6">
             <p className="text-[11px] tracking-[0.3em] uppercase text-rendalli-green">From our farm</p>
             <h2 className="text-4xl md:text-5xl font-light tracking-tight text-white text-balance">
-              Farm-raised Nile Perch &amp; Tilapia — delivered within 24 hours.
+              Farm-raised. Tilapia — delivered within 24 hours.
             </h2>
             <p className="text-leaf-mist/80 leading-relaxed max-w-lg">
               We raise our fish with care in clean, monitored waters. No hormones, no shortcuts. Just honest food, grown the right way.

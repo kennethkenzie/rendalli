@@ -36,8 +36,6 @@ export type NavItem = {
 export const NAV_ITEMS: NavItem[] = [
   { heading: "Home", href: "/", subheading: "Fresh from the lake",
     imgSrc: "https://images.unsplash.com/photo-1439853949127-fa647821eba0?w=1200&q=80&auto=format&fit=crop" },
-  { heading: "Brand", href: "/brand", subheading: "Who we are",
-    imgSrc: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=80&auto=format&fit=crop" },
   { heading: "Products", href: "/products", subheading: "Our fish",
     imgSrc: "https://images.unsplash.com/photo-1535473895227-bdecb20fb157?w=1200&q=80&auto=format&fit=crop" },
   { heading: "Story", href: "/story", subheading: "From Lake Victoria",
