@@ -1,147 +1,271 @@
 "use client";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import Image from "next/image";
-import { useRef } from "react";
-import { IMAGES } from "@/lib/rendalli";
-import { PRODUCTS } from "@/lib/products";
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { useRef } from "react";
+import { Check, Phone, ArrowRight, ChevronDown } from "lucide-react";
+import { IMAGES } from "@/lib/rendalli";
+import { TILAPIA } from "@/lib/products";
 
 const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
-
 export default function ProductsPage() {
+  const pageRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: pageProg } = useScroll({ target: pageRef });
+
+  // Hero parallax
   const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 45]);
-  const yImg = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const { scrollYProgress: heroProg } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroBgY = useTransform(heroProg, [0, 1], ["0%", "40%"]);
+  const heroFishY = useTransform(heroProg, [0, 1], ["0%", "-25%"]);
+  const heroTextY = useTransform(heroProg, [0, 1], ["0%", "60%"]);
+  const heroFade = useTransform(heroProg, [0, 0.8], [1, 0]);
+
+  // Section 2 — split parallax
+  const splitRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: splitProg } = useScroll({ target: splitRef, offset: ["start end", "end start"] });
+  const imgUp = useTransform(splitProg, [0, 1], ["20%", "-20%"]);
+  const copyDown = useTransform(splitProg, [0, 1], ["-15%", "15%"]);
+  const bigWord = useTransform(splitProg, [0, 1], ["-30%", "30%"]);
+
+  // Section 3 — full-bleed pinned image
+  const fullRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: fullProg } = useScroll({ target: fullRef, offset: ["start end", "end start"] });
+  const fullImgScale = useTransform(fullProg, [0, 1], [1.3, 1]);
+  const fullImgY = useTransform(fullProg, [0, 1], ["-10%", "10%"]);
+
+  // Gallery parallax
+  const galRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: galProg } = useScroll({ target: galRef, offset: ["start end", "end start"] });
+  const g1 = useTransform(galProg, [0, 1], ["10%", "-10%"]);
+  const g2 = useTransform(galProg, [0, 1], ["-15%", "15%"]);
+  const g3 = useTransform(galProg, [0, 1], ["5%", "-20%"]);
+
+  // Progress bar
+  const progress = useSpring(pageProg, { stiffness: 120, damping: 30, mass: 0.3 });
 
   return (
-    <>
-      {/* HERO — rotating big headline + floating product image */}
-      <section ref={heroRef} className="relative min-h-[100dvh] bg-rendalli-green text-white overflow-hidden flex items-center pt-28">
-        <div className="absolute inset-0 opacity-30">
-          <Image src={IMAGES.heroBg} alt="" fill sizes="100vw" className="object-cover mix-blend-overlay" />
-        </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 w-full grid md:grid-cols-2 gap-10 items-center">
-          <div>
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-[11px] tracking-[0.3em] uppercase text-fresh-lemon mb-6"
-            >
-              Our fish · Our pride
-            </motion.p>
-            <h1 className="text-5xl md:text-8xl font-light leading-[0.95] tracking-tight text-balance">
-              <motion.span
-                initial={{ y: 80, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.9, ease: EASE }}
-                className="inline-block"
-              >
-                Good food
-              </motion.span>
-              <br />
-              <motion.span
-                initial={{ y: 80, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
-                className="inline-block italic text-night-leaf"
-              >
-                starts with
-              </motion.span>
-              <br />
-              <motion.span
-                initial={{ y: 80, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.9, delay: 0.3, ease: EASE }}
-                className="inline-block"
-              >
-                good fish.
-              </motion.span>
-            </h1>
+    <div ref={pageRef}>
+      {/* progress bar */}
+      <motion.div
+        style={{ scaleX: progress, transformOrigin: "0% 50%" }}
+        className="fixed top-0 left-0 right-0 h-[3px] bg-rendalli-green z-50"
+      />
+
+      {/* HERO */}
+      <section ref={heroRef} className="relative min-h-[110dvh] bg-night-leaf text-white overflow-hidden flex items-center justify-center">
+        <motion.div style={{ y: heroBgY }} className="absolute inset-0 -top-[10%] h-[130%]">
+          <Image src={IMAGES.heroBg} alt="" fill sizes="100vw" className="object-cover opacity-40" priority />
+          <div className="absolute inset-0 bg-gradient-to-b from-night-leaf/60 via-night-leaf/40 to-night-leaf" />
+        </motion.div>
+
+        <motion.div style={{ y: heroFishY }} className="absolute right-[-8%] md:right-[-4%] top-1/2 -translate-y-1/2 w-[75vw] md:w-[45vw] aspect-square">
+          <div className="absolute inset-0 rounded-full overflow-hidden border-[10px] border-fresh-lemon/80 shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
+            <Image src={TILAPIA.img} alt={TILAPIA.name} fill sizes="(min-width: 768px) 45vw, 75vw" className="object-cover" priority />
           </div>
-          <motion.div style={{ rotate, y: yImg }} className="relative aspect-square max-w-md mx-auto w-full">
-            <div className="absolute inset-0 rounded-full overflow-hidden border-8 border-fresh-lemon shadow-2xl">
-              <Image src={IMAGES.fishDish} alt="Fresh fish" fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" />
-            </div>
+        </motion.div>
+
+        <motion.div style={{ y: heroTextY, opacity: heroFade }} className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 w-full">
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-[11px] tracking-[0.35em] uppercase text-fresh-lemon mb-6"
+          >
+            The fish · The only one we raise
+          </motion.p>
+          <h1 className="font-light leading-[0.88] tracking-tight text-balance">
+            <motion.span
+              initial={{ y: 80, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1, ease: EASE }}
+              className="block text-6xl md:text-[9rem]"
+            >
+              Nile
+            </motion.span>
+            <motion.span
+              initial={{ y: 80, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1, delay: 0.15, ease: EASE }}
+              className="block italic text-rendalli-green text-6xl md:text-[10rem]"
+            >
+              Tilapia.
+            </motion.span>
+          </h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="mt-6 italic text-leaf-mist/80"
+          >
+            {TILAPIA.latin}
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-leaf-mist/70 flex flex-col items-center gap-2 z-10"
+        >
+          <span className="text-[10px] tracking-[0.4em] uppercase">Scroll</span>
+          <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}>
+            <ChevronDown size={18} />
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* INTRO — typographic parallax */}
+      <section ref={splitRef} className="relative bg-background py-32 md:py-48 overflow-hidden">
+        <motion.p
+          style={{ x: bigWord }}
+          className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center font-light text-[22vw] leading-none text-rendalli-green/5 pointer-events-none select-none tracking-tight"
+          aria-hidden
+        >
+          tilapia
+        </motion.p>
+
+        <div className="relative max-w-7xl mx-auto px-6 md:px-10 grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+          <motion.div style={{ y: imgUp }} className="relative aspect-[4/5] rounded-3xl overflow-hidden">
+            <Image src={TILAPIA.gallery[1]} alt="Grilled Nile Tilapia" fill sizes="(min-width: 768px) 45vw, 90vw" className="object-cover" />
+          </motion.div>
+
+          <motion.div style={{ y: copyDown }} className="space-y-6">
+            <p className="text-[11px] tracking-[0.3em] uppercase text-rendalli-green">01 — Character</p>
+            <h2 className="text-4xl md:text-6xl font-light text-night-leaf tracking-tight text-balance">
+              Mild. Flaky. <em className="not-italic text-rendalli-green">Honest.</em>
+            </h2>
+            {TILAPIA.longCopy.map((p, i) => (
+              <p key={i} className="text-lg text-deep-forest/85 leading-relaxed max-w-md">{p}</p>
+            ))}
+            <ul className="pt-4 space-y-3 text-sm text-night-leaf">
+              {TILAPIA.features.map((f) => (
+                <li key={f} className="flex items-center gap-3">
+                  <span className="w-5 h-5 rounded-full bg-rendalli-green/10 text-rendalli-green inline-flex items-center justify-center">
+                    <Check size={12} />
+                  </span>
+                  {f}
+                </li>
+              ))}
+            </ul>
           </motion.div>
         </div>
       </section>
 
-      {/* PRODUCT LIST — sticky scroll cards */}
-      <section className="bg-background py-24 md:py-32">
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <div className="mb-14">
-            <p className="text-[11px] tracking-[0.3em] uppercase text-rendalli-green mb-3">The range</p>
-            <h2 className="text-4xl md:text-6xl font-light text-night-leaf tracking-tight max-w-2xl text-balance">
-              Three signatures. <em className="not-italic text-rendalli-green">One promise.</em>
-            </h2>
+      {/* FULL-BLEED PARALLAX */}
+      <section ref={fullRef} className="relative h-[90vh] overflow-hidden bg-night-leaf">
+        <motion.div style={{ scale: fullImgScale, y: fullImgY }} className="absolute inset-0">
+          <Image src={TILAPIA.gallery[2]} alt="Nile Tilapia cooking" fill sizes="100vw" className="object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-night-leaf via-night-leaf/30 to-transparent" />
+        </motion.div>
+        <div className="relative z-10 h-full flex items-end">
+          <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pb-16 md:pb-24 grid md:grid-cols-2 gap-10 items-end">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.9, ease: EASE }}
+              className="text-4xl md:text-7xl font-light tracking-tight text-white text-balance"
+            >
+              From the farm to <em className="not-italic text-fresh-lemon">your table</em> — in 24 hours.
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
+              className="text-lg text-leaf-mist/85 leading-relaxed max-w-md"
+            >
+              Harvested in the morning, on ice by midday, at your door by dinner. No middlemen. No guesswork.
+            </motion.p>
+          </div>
+        </div>
+      </section>
+
+      {/* PRICING */}
+      <section className="relative bg-rendalli-green text-white py-24 md:py-32 overflow-hidden">
+        <div className="absolute inset-0 grain opacity-40 pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-6 md:px-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+            <div>
+              <p className="text-[11px] tracking-[0.3em] uppercase text-fresh-lemon mb-3">02 — Daily pricing</p>
+              <h2 className="text-4xl md:text-6xl font-light tracking-tight text-balance">
+                Three sizes. <em className="not-italic text-fresh-lemon">One fish.</em>
+              </h2>
+            </div>
+            <a href="tel:+256706609808" className="self-start inline-flex items-center gap-2 bg-fresh-lemon text-night-leaf px-6 py-3 rounded-full text-sm font-medium hover:bg-white transition-colors">
+              <Phone size={16} /> 0706 609 808
+            </a>
           </div>
 
-          <div className="space-y-24 md:space-y-40">
-            {PRODUCTS.map((p, i) => (
-              <motion.article
-                key={p.slug}
-                initial={{ opacity: 0, y: 60 }}
+          <div className="grid md:grid-cols-3 gap-5">
+            {TILAPIA.prices.map((pr, i) => (
+              <motion.div
+                key={pr.size}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.9, ease: EASE }}
-                className={`grid md:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? "md:[&>div:first-child]:order-2" : ""}`}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.7, delay: i * 0.1, ease: EASE }}
+                className="rounded-3xl bg-white/10 backdrop-blur border border-white/15 p-8 hover:bg-white/15 transition-colors"
               >
-                <Link href={`/products/${p.slug}`} className="block"><motion.div whileHover={{ scale: 1.02, rotate: -1 }} transition={{ type: "spring", stiffness: 200 }} className="relative aspect-[4/5] rounded-3xl overflow-hidden group">
-                  <Image src={p.img} alt={p.name} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    {p.tags.map((t) => (
-                      <span key={t} className="px-3 py-1 rounded-full bg-white/90 backdrop-blur text-[10px] tracking-[0.2em] uppercase text-night-leaf">{t}</span>
-                    ))}
-                  </div>
-                </motion.div></Link>
-                <div>
-                  <p className="font-mono text-sm text-rendalli-green mb-2">0{i + 1} / 0{PRODUCTS.length}</p>
-                  <h3 className="text-4xl md:text-6xl font-light text-night-leaf tracking-tight mb-2">{p.name}</h3>
-                  <p className="italic text-deep-forest/70 mb-6">{p.latin}</p>
-                  <p className="text-lg text-deep-forest/85 leading-relaxed max-w-md mb-6">{p.copy}</p>
-                  <ul className="space-y-2 text-sm text-night-leaf">
-                    {p.features.slice(0, 3).map((f) => (
-                      <li key={f} className="flex items-center gap-2">
-                        <Check size={14} className="text-rendalli-green" /> {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href={`/products/${p.slug}`} className="inline-flex items-center gap-2 mt-6 text-rendalli-green font-medium hover:gap-3 transition-all text-sm">
-                    View {p.name} details →
-                  </Link>
-                </div>
-              </motion.article>
+                <p className="text-[10px] tracking-[0.3em] uppercase text-fresh-lemon mb-6">{pr.note}</p>
+                <p className="text-5xl md:text-6xl font-light tracking-tight">
+                  <span className="text-fresh-lemon text-2xl md:text-3xl align-top mr-2">UGX</span>{pr.price}
+                </p>
+                <p className="mt-3 text-sm tracking-[0.25em] uppercase text-leaf-mist/80">{pr.size}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* QUALITY BAND */}
-      <section className="bg-night-leaf text-leaf-mist py-20">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 grid md:grid-cols-4 gap-10">
-          {[
-            { k: "24h", v: "Farm to shop" },
-            { k: "0", v: "Hormones used" },
-            { k: "100%", v: "Traceable" },
-            { k: "3+", v: "Regions served" },
-          ].map((s, i) => (
-            <motion.div
-              key={s.k}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1, ease: EASE }}
-            >
-              <p className="text-5xl md:text-7xl font-light text-fresh-lemon mb-2">{s.k}</p>
-              <p className="text-sm tracking-[0.2em] uppercase text-leaf-mist/70">{s.v}</p>
+      {/* GALLERY */}
+      <section ref={galRef} className="relative bg-background py-24 md:py-32 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
+          <p className="text-[11px] tracking-[0.3em] uppercase text-rendalli-green mb-3">03 — On the plate</p>
+          <h2 className="text-4xl md:text-6xl font-light text-night-leaf tracking-tight max-w-2xl text-balance mb-14">
+            However you cook it. <em className="not-italic text-rendalli-green">It works.</em>
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            <motion.div style={{ y: g1 }} className="relative aspect-[3/4] rounded-3xl overflow-hidden md:mt-0">
+              <Image src={TILAPIA.gallery[0]} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
             </motion.div>
-          ))}
+            <motion.div style={{ y: g2 }} className="relative aspect-[3/4] rounded-3xl overflow-hidden md:mt-24">
+              <Image src={TILAPIA.gallery[1]} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+            </motion.div>
+            <motion.div style={{ y: g3 }} className="relative aspect-[3/4] rounded-3xl overflow-hidden md:mt-0">
+              <Image src={TILAPIA.gallery[3]} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+            </motion.div>
+          </div>
         </div>
       </section>
-    </>
+
+      {/* CTA */}
+      <section className="bg-night-leaf text-leaf-mist py-24 md:py-32">
+        <div className="max-w-5xl mx-auto px-6 md:px-10 text-center">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, ease: EASE }}
+            className="text-4xl md:text-7xl font-light tracking-tight text-white text-balance"
+          >
+            Ready for <em className="not-italic text-fresh-lemon">fresh Tilapia</em> tonight?
+          </motion.h2>
+          <p className="mt-6 text-leaf-mist/80 max-w-xl mx-auto">
+            Call the sales helpline for same-day delivery, or drop by the shop.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <a href="tel:+256706609808" className="inline-flex items-center gap-2 bg-fresh-lemon text-night-leaf px-6 py-3 rounded-full text-sm font-medium hover:bg-white transition-colors">
+              <Phone size={16} /> 0706 609 808
+            </a>
+            <Link href="/contact" className="inline-flex items-center gap-2 bg-white/10 text-white border border-white/20 px-6 py-3 rounded-full text-sm font-medium hover:bg-white hover:text-night-leaf transition-colors">
+              Visit our shop <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
